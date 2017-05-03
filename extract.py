@@ -11,12 +11,12 @@ def remove_html_tag(content):
 
 
 def get_units(content, units):
-    content = remove_html_tag(content)
+    data = remove_html_tag(content)
     units_str = ''.join(units)
     pattern = re.compile(r'[0-9o.]+[{}]+'.format(units_str))
-    results = re.findall(pattern, content)
-    results = list(filter(lambda x: x.endswith(tuple(units)), results))
-    results = list(map(lambda x: x.replace('o', '0'), results))
+    results = re.findall(pattern, data)
+    results = [r for r in results if r.endswith(tuple(units))]
+    results = [r.replace('o', '0') for r in results]
     return results
 
 

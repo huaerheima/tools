@@ -2,11 +2,11 @@
 
 import scipy.misc
 import gdal
-import osr
 import math
 import numpy
 
 from skimage.color import rgb2gray
+
 
 class TifHandler(object):
 
@@ -47,7 +47,3 @@ class TifHandler(object):
         dy = abs(round((size / r / math.cos(latitude / 180 * math.pi) / 2 / math.pi) * im_y))
         return self._im[x-dx:x+dx, y-dy:y+dy].mean() / max_light
 
-
-if __name__ == "__main__":
-    # example
-    pass

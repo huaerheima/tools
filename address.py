@@ -53,12 +53,10 @@ class Address(object):
         result = requests.get(self._base_url + func_url, params=params)
         data = json.loads(result.text)
         if data['status'] == 0:
-            return {
-                'duration': data['result'][0]['duration']['value'],
-                'distance': data['result'][0]['distance']['value']
-            }
+            info = data['result'][0]['duration']['value'], data['result'][0]['distance']['value']
         else:
-            return None
+            info = None
+        return info
 
     def _get_location(self):
         func_url = '/geocoder/v2/'
@@ -68,9 +66,10 @@ class Address(object):
         result = requests.get(self._base_url + func_url, params)
         data = json.loads(result.text)
         if data['status'] == 0:
-            return data['result']['location']['lat'], data['result']['location']['lng'],
+            coordinate = data['result']['location']['lat'], data['result']['location']['lng'],
         else:
-            return None
+            coordinate = None
+        return coordinate
 
     def _get_address(self):
         if not self._component:
@@ -91,21 +90,21 @@ class Address(object):
 if __name__ == "__main__":
     # example
 
-    addr = Address(address="金隅嘉华大厦")
-    print(addr.address)
-    print(addr.location)
-    print(addr.province)
-    print(addr.city)
-    print(addr.district)
+    point_1 = Address(address="金隅嘉华大厦")
+    print(point_1.address)
+    print(point_1.location)
+    print(point_1.province)
+    print(point_1.city)
+    print(point_1.district)
     print()
 
-    addr_2 = Address(location=(40.07871264866282, 116.33392797379916))
-    print(addr_2.address)
-    print(addr_2.location)
-    print(addr_2.province)
-    print(addr_2.city)
-    print(addr_2.district)
+    point_2 = Address(location=(40.07871264866282, 116.33392797379916))
+    print(point_2.address)
+    print(point_2.location)
+    print(point_2.province)
+    print(point_2.city)
+    print(point_2.district)
     print()
 
-    print(addr_2.route(addr))
-    print(Address.route(addr_2, addr))
+    print(point_2.route(point_1))
+    print(Address.route(point_2, point_1))
