@@ -22,7 +22,7 @@ def get_units(content, units):
 
 if __name__ == '__main__':
     # example
-    content = """<p><span style="font-size: 16px;">
+    data = """<p><span style="font-size: 16px;">
                 本地块位于河北省和北京交界处，官厅湖南岸祈康公路路边，紧
                 邻碧桂园官厅湖1号.香水湾.拉斐水岸.观澜墅.上古水郡几大别墅区，
                 村口就有880公交车通往朱辛庄地铁口站，这里绿化面积高达80%以上，空气质量特别高，
@@ -34,5 +34,5 @@ if __name__ == '__main__':
                 潜在被获拆迁款的机会，如拆迁其价值为：按一平米宅基地赔一平米楼房.按当地楼房价格
                 6000左右就是2340平米*6000元=14040o000元，咋样潜力大不大。这就是此地块现实真实的
                 现有条件。 准备永久性出售， 价格可以谈</span></p>"""
-    print(remove_html_tag(content))
-    print(get_units(content, ['米', '平米', '元']))
+    print(remove_html_tag(data))
+    print(get_units(data, ['米', '平米', '元']))
