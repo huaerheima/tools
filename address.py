@@ -3,6 +3,8 @@
 import json
 import requests
 
+from exception import AddressException
+
 
 class Address(object):
 
@@ -53,10 +55,9 @@ class Address(object):
         result = requests.get(self._base_url + func_url, params=params)
         data = json.loads(result.text)
         if data['status'] == 0:
-            info = data['result'][0]['duration']['value'], data['result'][0]['distance']['value']
+            return data['result'][0]['duration']['value'], data['result'][0]['distance']['value']
         else:
-            info = None
-        return info
+            raise AddressException(40000)
 
     def _get_location(self):
         func_url = '/geocoder/v2/'
@@ -66,10 +67,9 @@ class Address(object):
         result = requests.get(self._base_url + func_url, params)
         data = json.loads(result.text)
         if data['status'] == 0:
-            coordinate = data['result']['location']['lat'], data['result']['location']['lng'],
+            return data['result']['location']['lat'], data['result']['location']['lng'],
         else:
-            coordinate = None
-        return coordinate
+            raise AddressException(40001)
 
     def _get_address(self):
         if not self._component:
@@ -80,11 +80,14 @@ class Address(object):
             result = requests.get(self._base_url + func_url, params)
             data = json.loads(result.text)
             if data['status'] == 0:
-                self._component = data['result']['addressComponent']
-                self._address = data['result']['formatted_address'] + data['result']['sematic_description']
+                if data['result']['formatted_address']:
+                    self._component = data['result']['addressComponent']
+                    self._address = data['result']['formatted_address'] + data['result']['sematic_description']
+                    return self._address
+                else:
+                    raise AddressException(40001)
             else:
-                return None
-        return self._address
+                raise AddressException(40000)
 
 
 if __name__ == "__main__":
@@ -106,5 +109,5 @@ if __name__ == "__main__":
     print(point_2.district)
     print()
 
-    print(point_2.route(point_1))
-    print(Address.route(point_2, point_1))
+    # print(point_2.route(point_1))
+    # print(Address.route(point_2, point_1))
