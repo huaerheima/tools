@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from skimage.color import rgb2gray
 import scipy.misc
 import gdal
 import osr
 import math
+import numpy
 
+from skimage.color import rgb2gray
 
 class TifHandler(object):
 
@@ -13,6 +14,15 @@ class TifHandler(object):
         self._dataset = gdal.Open(tif_path)
         self._gt = self._dataset.GetGeoTransform()
         self._im = rgb2gray(scipy.misc.imread(tif_path))
+        self._world_size = None
+
+    @property
+    def world_size(self):
+        if not self._world_size:
+            point_1 = numpy.array(self.image_coordinate(0, 0))
+            point_2 = numpy.array(self.image_coordinate(180, 90))
+            self._world_size = tuple((abs(point_2) + abs(point_1)) * 2)
+        return self._world_size
 
     def image_coordinate(self, longtitude, latitude):
         gt = self._gt
@@ -31,9 +41,13 @@ class TifHandler(object):
 
     def get_brightness(self, longtitude, latitude, size):
         r, max_light = 6371, 1.0
-        im_x, im_y = 6750, 13500
+        im_x, im_y = self.world_size
         x, y = self.image_coordinate(longtitude, latitude)
         dx = abs(round((size / r / math.pi) * im_x))
         dy = abs(round((size / r / math.cos(latitude / 180 * math.pi) / 2 / math.pi) * im_y))
         return self._im[x-dx:x+dx, y-dy:y+dy].mean() / max_light
 
+
+if __name__ == "__main__":
+    # example
+    pass
